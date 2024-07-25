@@ -1,0 +1,181 @@
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    font-family: stylish;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #343a40;
+    color: white;
+    padding: 10px 20px;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.navbar-right a.active {
+    font-weight: bold;
+}
+
+/* Campaign Section*/
+.create-campaign-button, .campaigns-section .request-button, .campaigns-section .update-button,.campaigns-section .delete-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.create-campaign-button {
+    background-color: #007BFF;
+}
+
+.campaigns-section .request-button {
+    background-color: #28a745;
+}
+
+.campaigns-section .update-button {
+    background-color: #ffc107;
+}
+
+.campaigns-section .delete-button {
+    background-color: #dc3545;
+}
+
+
+.create-campaign-button:hover {
+    background-color: #0056b3;
+}
+
+.campaigns-section .request-button:hover {
+    background-color: #218838;
+}
+
+.campaigns-section .update-button:hover {
+    background-color: #e0a800;
+}
+
+.campaigns-section .delete-button:hover {
+    background-color: #c82333;
+}
+
+.campaigns-section {
+    padding: 20px;
+}
+
+.campaigns-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.campaigns-section li {
+    background-color: white;
+    border: 1px solid #ddd;
+    margin: 10px 0;
+    padding: 20px;
+}
+
+.campaigns-section h2 {
+    text-align: center;
+}
+
+
+/* Modal styles */
+.modal, #create-campaign-modal, #update-campaign-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px;
+}
+
+.modal-content, #create-campaign-modal .modal-content, #update-campaign-modal .modal-content  {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+.close, #create-campaign-modal .close, #update-campaign-modal .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover, .close:focus, #create-campaign-modal .close:hover, #create-campaign-modal .close:focus, #update-campaign-modal .close:hover, #update-campaign-modal .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal form, #create-campaign-modal form, #update-campaign-modal form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal form label, #create-campaign-modal form label, #update-campaign-modal form label {
+    margin: 10px 0 5px;
+}
+
+.modal form input[type="text"], .modal form input[type="number"], .modal form textarea,
+#create-campaign-modal form input[type="text"], #create-campaign-modal form input[type="number"], #create-campaign-modal form input[type="date"], 
+#create-campaign-modal form textarea, #create-campaign-modal form select,
+#update-campaign-modal form input[type="text"], #update-campaign-modal form input[type="number"], #update-campaign-modal form input[type="date"], 
+#update-campaign-modal form textarea, #update-campaign-modal form select { 
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 98%;
+}
+
+.modal form button, #create-campaign-modal form button[type="submit"], #update-campaign-modal form button[type="submit"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal form button:hover, #create-campaign-modal form button[type="submit"]:hover, #update-campaign-modal form button[type="submit"]:hover {
+    background-color: #0056b3;
+}

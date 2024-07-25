@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/admin_dashboard.css">
+</head>
+<body>
+    <header>
+        <h1>ENGAGE-X</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span>Admin</span>
+        </div>
+        <div class="navbar-right">
+            <a href="#">Dashboard</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <!--Info section -->
+    <section id="dashboard-section">
+        <h2>Welcome Admin!</h2>
+        <div class="dashboard-grid">
+            <a href="{{ url_for('show_campaigns', type='all') }}" class="dashboard-box">
+                <h3>Total Campaigns</h3>
+                <div class="dashboard-number">{{ total_campaigns }}</div>
+            </a>
+            <a href="{{ url_for('show_campaigns', type='active') }}" class="dashboard-box">
+                <h3>Active Campaigns</h3>
+                <div class="dashboard-number">{{ active_campaigns }}</div>
+            </a>
+            <a href="{{ url_for('show_campaigns', type='public') }}" class="dashboard-box">
+                <h3>Public Campaigns</h3>
+                <div class="dashboard-number">{{ public_campaigns }}</div>
+            </a>
+            <a href="{{ url_for('show_campaigns', type='private') }}" class="dashboard-box">
+                <h3>Private Campaigns</h3>
+                <div class="dashboard-number">{{ private_campaigns }}</div>
+            </a>
+            <a href="{{ url_for('show_users', type='all') }}" class="dashboard-box">
+                <h3>Total Users</h3>
+                <div class="dashboard-number">{{ total_users }}</div>
+            </a>
+            <a href="{{ url_for('show_users', type='influencers') }}" class="dashboard-box">
+                <h3>Influencers</h3>
+                <div class="dashboard-number">{{ influencers }}</div>
+            </a>
+            <a href="{{ url_for('show_users', type='sponsors') }}" class="dashboard-box">
+                <h3>Sponsors</h3>
+                <div class="dashboard-number">{{ sponsors }}</div>
+            </a>
+            <a href="{{ url_for('show_users', type='flagged') }}" class="dashboard-box">
+                <h3>Flagged Users</h3>
+                <div class="dashboard-number">{{ flagged_users }}</div>
+            </a>
+        </div>
+    </section>
+
+
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Dashboard</title>
+    <link rel="stylesheet" href="/static/css/sdashboard.css">
+</head>
+<body>
+    <header>
+        <h1>ENGAGE-X</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span>Sponsor</span>
+        </div>
+        <div class="navbar-right">
+            <a href="#" class="active" id="profile-link">Profile</a>
+            <a href="{{ url_for('scampaigns') }}" id="campaigns-link">Campaigns</a>
+            <a href="{{ url_for('find_sponsor') }}" id="find-link">Find</a>
+            <a href="#">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+
+    <main>
+        <div class="dashboard-container">
+            <h2>Welcome {{ name }}!</h2>
+            <section class="active-campaigns">
+                <h3>Active Campaigns:</h3>
+                {% for campaign in campaigns %}
+                <div class="campaign">
+                    <span>{{ campaign.title }} | Progress: {{ campaign.progress }}%</span>
+                    <button class="view-btn">View</button>
+                </div>
+                {% endfor %}
+
+            </section>
+
+            <section class="pending-requests">
+                <h3>Pending Requests:</h3>
+                {% for request in requests %}
+                <div class="request">
+                    <span>{{ request.campaign_title }} | {{ request.influencer_username }}</span>
+                    <button class="view-btn">View</button>
+                    <form action="{{ url_for('update_request_status', request_id=request.request_id, source = 'sponsor') }}" method="POST">
+                        <input type="hidden" name="action" value="accept">
+                        <button class="accept-btn" type="submit">Accept</button>
+                    </form>
+                    <form action="{{ url_for('update_request_status', request_id=request.request_id, source = 'sponsor') }}" method="POST">
+                        <input type="hidden" name="action" value="reject">
+                        <button class="reject-btn" type="submit">Reject</button>
+                    </form>
+
+                </div>
+                {% endfor %}
+
+            </section>
+        </div>
+    </main>
+</body>
+</html>

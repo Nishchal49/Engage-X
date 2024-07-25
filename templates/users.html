@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+</head>
+<body>
+    <header>
+        <h1>ENGAGE-X</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span>Admin</span>
+        </div>
+        <div class="navbar-right">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('show_campaigns', type='all') }}">Campaigns</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <div id="search-bar" class="search-bar">
+        <form action="{{ url_for('search_admin') }}" method="POST">
+            <input type="text" name="search-input" placeholder="Search" id="search-input">
+            <input type="text" name="source" value="users" hidden>
+            <select name="tag" id="tag">
+                <option value="username">Username</option>
+                <option value="role">Role</option>
+                <option value="funds">Minimum Funds</option>
+            </select>
+            <button id="search-button">Search</button>
+        </form>
+    </div>
+
+    <!-- Users Section -->
+    <section id="users-section">
+        <h2>{{ type|capitalize }} Users</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Industry</th>
+                    <th>Niche</th>
+                    <th>Reach</th>
+                    <th>Funds</th>
+                    <th>Flagged</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.profile.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.profile.industry }}</td>
+                    <td>{{ user.profile.niche }}</td>
+                    <td>{{ user.profile.reach }}</td>
+                    <td>{{ user.profile.funds }}</td>
+                    <td>{{ 'Yes' if user.is_flagged else 'No' }}</td>
+                    <td>
+                        <form action="{{ url_for('show_users', type=type) }}" method="post">
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            {% if user.is_flagged %}
+                                <button type="submit" name="action" value="unflag" class="unflag-button">Unflag</button>
+                            {% else %}
+                                <button type="submit" name="action" value="flag" class="flag-button">Flag</button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

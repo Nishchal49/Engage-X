@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/sample.css">
+</head>
+<body>
+    <header>
+        <h1>ENGAGE-X</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span>Admin</span>
+        </div>
+        <div class="navbar-right">
+            <a href="#" class="active" id="profile-link">Info</a>
+            <a href="#" id="find-link">Find</a>
+            <a href="#">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <section id="dashboard-section">
+        <h2>Admin Dashboard</h2>
+        <div class="dashboard-grid">
+            <div class="dashboard-box">Total Campaigns</div>
+            <div class="dashboard-box">Active Campaigns</div>
+            <div class="dashboard-box">Public Campaigns</div>
+            <div class="dashboard-box">Private Campaigns</div>
+            <div class="dashboard-box">Total Users</div>
+            <div class="dashboard-box">Influencers</div>
+            <div class="dashboard-box">Sponsors</div>
+            <div class="dashboard-box">Flagged Users</div>
+        </div>
+    </section>
+
+    <section id="ongoing-campaigns-section">
+        <h2>Ongoing Campaigns</h2>
+        {% if ongoing_campaigns %}
+            <ul>
+            {% for campaign in ongoing_campaigns %}
+                <li>
+                    <h3>{{ campaign.title }}</h3>
+                    <p>{{ campaign.description }}</p>
+                    <p><strong>Goals:</strong> {{ campaign.goals }}</p>
+                    <p><strong>Funds:</strong> Rs {{ campaign.funds }}</p>
+                    <p><strong>Start Date:</strong> {{ campaign.start_date }}</p>
+                    {% if campaign.end_date < today_date %}
+                        <p><strong>End Date:</strong> {{ campaign.end_date }}</p>
+                    {% else %}
+                        <p><strong>Progress:</strong> {{ campaign.progress }}%</p>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No active campaigns.</p>
+        {% endif %}
+    </section>
+
+    <section id ="flagged">
+        {% if flagged_users %}
+            <ul>
+                {% for user in flagged_users %}
+                    <li>
+                        <h3>{{ user.username }}</h3>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Role:</strong> {{ user.role }}</p>
+                        <p><strong>Status:</strong> Flagged</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No flagged users.</p>
+        {% endif %}
+    </section>
+</body>
+</html>

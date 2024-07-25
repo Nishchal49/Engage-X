@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <link rel="stylesheet" href="/static/css/admin_dashboard.css">
+</head>
+<body>
+    <header>
+        <h1>ENGAGE-X</h1>
+    </header>
+
+    <!-- Search Results Section -->
+    <section id="search-results-section">
+        <h2>Search Results</h2>
+        <table>
+            <thead>
+                {% if source == 'campaigns' %}
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Goals</th>
+                    <th>Funds</th>
+                    <th>Start Date</th>
+                    <th>Status</th>
+                    <th>Visibility</th>
+                </tr>
+                {% elif source == 'users' %}
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Industry</th>
+                    <th>Niche</th>
+                    <th>Reach</th>
+                    <th>Funds</th>
+                    <th>Flagged</th>
+                    <th>Action</th>
+                </tr>
+                {% endif %}
+            </thead>
+            <tbody>
+                {% if source == 'campaigns' %}
+                {% for campaign in results %}
+                <tr>
+                    <td>{{ campaign.id }}</td>
+                    <td>{{ campaign.title }}</td>
+                    <td>{{ campaign.description }}</td>
+                    <td>{{ campaign.goals }}</td>
+                    <td>{{ campaign.funds }}</td>
+                    <td>{{ campaign.start_date }}</td>
+                    <td>
+                        Progress: {{ campaign.progress }}%
+                        {% if campaign.end_date < today_date %}
+                            <br>End Date: {{ campaign.end_date }}
+                        {% endif %}
+                    </td>
+                    <td>{{ campaign.visibility }}</td>
+                </tr>
+                {% endfor %}
+                {% elif source == 'users' %}
+                {% for profile in results %}
+                <tr>
+                    <td>{{ profile.user.id }}</td>
+                    <td>{{ profile.user.username }}</td>
+                    <td>{{ profile.user.email }}</td>
+                    <td>{{ profile.user.role }}</td>
+                    <td>{{ profile.industry }}</td>
+                    <td>{{ profile.niche }}</td>
+                    <td>{{ profile.reach }}</td>
+                    <td>{{ profile.funds }}</td>
+                    <td>{{ 'Yes' if profile.is_flagged else 'No' }}</td>
+                    <td>
+                        <form action="{{ url_for('show_users', type=type) }}" method="post">
+                            <input type="hidden" name="user_id" value="{{ profile.id }}">
+                            {% if profile.user.is_flagged %}
+                                <button type="submit" name="action" value="unflag" class="unflag-button">Unflag</button>
+                            {% else %}
+                                <button type="submit" name="action" value="flag" class="flag-button">Flag</button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        {% if not results %}
+        <p>No results found.</p>
+        {% endif %}
+    </section>
+</body>
+</html>

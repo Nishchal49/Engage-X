@@ -1,0 +1,114 @@
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    font-family: stylish;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: #343a40;
+    color: white;
+    padding: 10px 20px;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-right a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.navbar-right a.active {
+    font-weight: bold;
+}
+
+/* Main Section */
+
+.dashboard-container {
+    padding: 30px;
+}
+
+.dashboard-container h2 {
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.active-campaigns, .pending-requests {
+    margin-bottom: 30px;
+}
+
+.active-campaigns h3, .pending-requests h3 {
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.campaign, .request {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.campaign span, .request span {
+    flex-grow: 1;
+    font-size: 18px;
+}
+
+.view-btn, .accept-btn, .reject-btn {
+    padding: 10px 15px;
+    margin-left: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.view-btn {
+    background-color: #ffc107;
+    color: white;
+}
+
+.accept-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #e0a800;
+}
+
+.accept-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
