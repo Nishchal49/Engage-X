@@ -31,32 +31,43 @@
             <h2>Welcome {{ name }}!</h2>
             <section class="active-campaigns">
                 <h3>Active Campaigns:</h3>
-                {% for campaign in campaigns %}
-                <div class="campaign">
-                    <span>{{ campaign.title }} | Progress: {{ campaign.progress }}%</span>
-                    <button class="view-btn">View</button>
-                </div>
-                {% endfor %}
-
+                {% if campaigns %}
+                    {% for campaign in campaigns %}
+                    <div class="campaign">
+                        <span>{{ campaign.title }} | Progress: {{ campaign.progress }}%</span>
+                        <button class="view-btn">View</button>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="campaign">
+                        <span>No active campaigns</span>
+                    </div>
+                {% endif %}
             </section>
 
             <section class="pending-requests">
                 <h3>Pending Requests:</h3>
-                {% for request in requests %}
-                <div class="request">
-                    <span>{{ request.campaign_title }} | {{ request.influencer_username }}</span>
-                    <button class="view-btn">View</button>
-                    <form action="{{ url_for('update_request_status', request_id=request.request_id, source = 'sponsor') }}" method="POST">
-                        <input type="hidden" name="action" value="accept">
-                        <button class="accept-btn" type="submit">Accept</button>
-                    </form>
-                    <form action="{{ url_for('update_request_status', request_id=request.request_id, source = 'sponsor') }}" method="POST">
-                        <input type="hidden" name="action" value="reject">
-                        <button class="reject-btn" type="submit">Reject</button>
-                    </form>
+                {% if requests %}
+                    {% for request in requests %}
+                    <div class="request">
+                        <span>{{ request.campaign_title }} | {{ request.influencer_username }}</span>
+                        <button class="view-btn">View</button>
+                        <form action="{{ url_for('update_request_status', request_id=request.request_id, source = 'sponsor') }}" method="POST">
+                            <input type="hidden" name="action" value="accept">
+                            <button class="accept-btn" type="submit">Accept</button>
+                        </form>
+                        <form action="{{ url_for('update_request_status', request_id=request.request_id, source = 'sponsor') }}" method="POST">
+                            <input type="hidden" name="action" value="reject">
+                            <button class="reject-btn" type="submit">Reject</button>
+                        </form>
 
-                </div>
-                {% endfor %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="request">
+                        <span>No Pending requests!!</span>
+                    </div>
+                {% endif %}
 
             </section>
         </div>

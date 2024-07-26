@@ -16,6 +16,22 @@ class campaign(Resource):
         parser.add_argument('sponsor_id', type=int, required=False, help='User ID is required')
         args = parser.parse_args()
 
+        spons = Profile.query.filter(Profile.user_id == args['sponsor_id']).first()
+        if not spons:
+            return {'message': 'Sponsor does not exist'}, 400
+        
+        total_funds = spons.funds
+        print(total_funds)
+
+        if total_funds < args['funds']:
+            return {'message': 'Insufficient funds'}, 400
+        
+        spons.funds -= args['funds']
+
+        
+        if Campaign.query.filter(Campaign.title == args['title']).first():
+            return {'message' : 'Campaigns cannot have duplicate titles'}, 404
+
         new_campaign = Campaign(
             title=args['title'],
             description=args['description'],
@@ -26,11 +42,6 @@ class campaign(Resource):
             visibility=args['visibility'],
             sponsor_id=args['sponsor_id']
         )
-
-
-        if Campaign.query.filter(Campaign.title == args['title']).first():
-            return {'message' : 'Campaigns cannot have duplicate titles'}, 404
-        
 
         print(new_campaign.title)
         print(new_campaign.description)
@@ -91,6 +102,15 @@ class campaign(Resource):
         del_campaign = Campaign.query.get(args['id'])
         if not del_campaign:
             return {'message': 'Campaign not found'}, 404
+        
+        today = datetime.today().strftime("%Y-%m-%d")
+        end_date = del_campaign.get_end_date()
+
+        if today <= end_date:
+            spons = Profile.query.filter(Profile.user_id == del_campaign.sponsor_id).first()
+            if not spons:
+                return {'message': 'Sponsor does not exist'}, 400
+            spons.funds += del_campaign.funds
 
         print(del_campaign)
         db.session.delete(del_campaign)
