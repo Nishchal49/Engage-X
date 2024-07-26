@@ -90,7 +90,7 @@ def idashboard():
 
     inf = Profile.query.filter(Profile.user_id == current_userID).first()
     name = inf.name
-
+    funds = inf.funds
     ad_requests = AdRequest.query.filter(
         AdRequest.influencer_id == current_userID, 
         AdRequest.initiator == 'sponsor', 
@@ -119,6 +119,7 @@ def idashboard():
     today_date = today.strftime("%Y-%m-%d")
     return rt('idashboard.html', 
               name =name, 
+              funds = funds, 
               campaigns = active_campaigns, 
               requests = requests_data, 
               today_date = today_date, 
@@ -235,12 +236,47 @@ def find_sponsor():
 def update_request_status(request_id, source):
     action = request.form['action']
     ad_request = AdRequest.query.filter(AdRequest.id == request_id).first()
-    if ad_request:
-        if action == 'accept':
+
+    if not ad_request:
+        return {'message': 'Ad request not found'}, 404
+
+    if action == 'accept':
+        if source == 'sponsor':
+            accptReq = AdRequest.query.filter(
+                AdRequest.campaign_id == ad_request.campaign_id,
+                AdRequest.status == 'accepted'
+            ).all()
+            totalPayments = sum(request.payment_amount for request in accptReq)
+            print(totalPayments)
+            campaign = Campaign.query.filter(Campaign.id == ad_request.campaign_id).first()
+            if not campaign:
+                return {'message': 'Campaign not found'}, 404
+
+            remFunds = campaign.funds - totalPayments
+            print(remFunds)
+            
+            if remFunds >= ad_request.payment_amount:
+                ad_request.status = 'accepted'
+                infProfile = Profile.query.filter(Profile.user_id == ad_request.influencer_id).first()
+                if not infProfile:
+                    return {'message': 'Influencer profile not found'}, 404
+
+                infProfile.funds += ad_request.payment_amount
+            else:
+                return {'message': 'Insufficient campaign funds to accept this request'}, 400
+
+        elif source == 'influencer':
             ad_request.status = 'accepted'
-        elif action == 'reject':
-            ad_request.status = 'rejected'
-        db.session.commit()
+            infProfile = Profile.query.filter(Profile.user_id == ad_request.influencer_id).first()
+            if not infProfile:
+                return {'message': 'Influencer profile not found'}, 404
+
+            infProfile.funds += ad_request.payment_amount
+
+    elif action == 'reject':
+        ad_request.status = 'rejected'
+
+    db.session.commit()
     if source == 'sponsor':
         return redirect(url_for('sdashboard'))
     elif source == 'influencer': 

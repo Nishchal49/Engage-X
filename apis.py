@@ -71,13 +71,23 @@ class campaign(Resource):
         parser.add_argument('campaign_id', type=int, required=False, help='Campaign ID is required')
         args = parser.parse_args()
 
-        # Retrieve the existing campaign from the database
         existing_campaign = Campaign.query.filter(Campaign.id == args['campaign_id']).first()
 
         if not existing_campaign:
             return {'message': 'Campaign not found'}, 404
+        
+        spons = Profile.query.filter(Profile.user_id == args['sponsor_id']).first()
+        if not spons:
+            return {'message': 'Sponsor does not exist'}, 400
+        
+        total_funds = spons.funds + existing_campaign.funds
+        print(total_funds)
 
-        # Update the existing campaign object
+        if total_funds < args['funds']:
+            return {'message': 'Insufficient funds'}, 400
+        
+        spons.funds = total_funds - args['funds']
+
         existing_campaign.title = args['title']
         existing_campaign.description = args['description']
         existing_campaign.goals = args['goals']
