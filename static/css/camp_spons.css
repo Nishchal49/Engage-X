@@ -148,6 +148,20 @@ header {
     background-color: #e0a800;
 }
 
+.button-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px; /* Adjust spacing between buttons */
+    margin-top: 10px; /* Adjust as needed */
+}
+
+.view-requests {
+    margin-left: auto; /* Push the "See All Requests" button to the right */
+}
+
+
+
 
 /* Modal styles */
 .modal, #create-campaign-modal, #update-campaign-modal {

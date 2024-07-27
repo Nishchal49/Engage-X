@@ -219,3 +219,53 @@ class ad_request(Resource):
 
 
         return {'message' : 'Request sent!'}
+    
+    def put(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('request_id', type=int, required=True, help='Request ID is required')
+        parser.add_argument('name', type=str, required=True, help='Name is required')
+        parser.add_argument('messages', type=str, required=True, help='Messages are required')
+        parser.add_argument('requirements', type=str, required=False) # Optional field for sponsor dashboard
+        parser.add_argument('payment_amount', type=float, required=True, help='Payment amount is required')
+        args = parser.parse_args()
+
+        existing_request = AdRequest.query.filter(AdRequest.id == args['request_id']).first()
+
+        if not existing_request:
+            return {'message': 'Request not found'}, 404
+        
+        if existing_request.status == 'accepted':
+            return {'message': 'Request was already accepted by the influencer!!'}, 404
+
+        existing_request.name = args['name']
+        existing_request.messages = args['messages']
+        existing_request.requirements = args.get('requirements')
+        existing_request.payment_amount = args['payment_amount']
+        if existing_request.initiator == 'influencer':
+            existing_request.initiator = 'sponsor'
+
+        try:
+            print(existing_request.name)
+            print(existing_request.messages)
+            print(existing_request.requirements)
+            print(existing_request.payment_amount)
+            db.session.commit()
+            return {'message': 'Request updated successfully!'}
+        except IntegrityError as e:
+            db.session.rollback()
+            return {'message': 'Error updating request: {}'.format(str(e))}, 500
+
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=int, required=True, help='Request ID is required')
+        args = parser.parse_args()
+
+        del_request = AdRequest.query.get(args['id'])
+        if not del_request:
+            return {'message': 'Request not found'}, 404
+
+        db.session.delete(del_request)
+        db.session.commit()
+
+        return {'message': 'Request deleted successfully!'}
+

@@ -35,7 +35,12 @@
                     {% for campaign in campaigns %}
                     <div class="campaign">
                         <span>{{ campaign.title }} | Progress: {{ campaign.progress }}%</span>
-                        <button class="view-btn">View</button>
+                        <form class="view-more-form" 
+                        action="{{ url_for('view_details', id=campaign.id, source = 'campaign') }}" 
+                        method="POST">    
+                            <input type="hidden" name="userID" value="{{ userID }}">
+                            <button class="view-btn">View</button>
+                        </form>
                     </div>
                     {% endfor %}
                 {% else %}

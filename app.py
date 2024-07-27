@@ -203,6 +203,7 @@ def scampaigns():
 
     return rt('campaign_sponsor.html', campaigns = dat, today_date = today_date, userID = current_userID)
 
+
 @app.route('/view_details/<source>/<int:id>', methods=['POST'])
 def view_details(id, source):
     if source =='campaign':
@@ -216,6 +217,19 @@ def view_details(id, source):
             return rt('view_details.html', campaign=campaign, today_date = today_date, userID = current_userID)
         else:
             return 'Campaign not found', 404
+
+
+@app.route('/view_requests/<source>/<int:id>', methods=['POST'])
+def view_requests(id, source):
+    if source == 'campaign':
+        
+        requests = AdRequest.query.filter(AdRequest.campaign_id == id).all()
+        for request in requests:
+            inf = User.query.filter(User.id == request.influencer_id).first()
+            request.inf_username = inf.username
+            if request.status == 'accepted':
+                request.status = 'Accepted by Influencer' if request.initiator == 'sponsor' else 'Accepted by You'
+        return rt('view_requests.html', requests=requests, campaign_id=id, userID = current_userID)
 
 
 @app.route('/find_sponsor', methods = ['GET', 'POST'])

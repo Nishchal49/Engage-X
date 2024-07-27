@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Dashboard</title>
+    <link rel="stylesheet" href="/static/css/view_requests.css">
+</head>
+<body>
+    <header>
+        <h1>ENGAGE-X</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span>Sponsor</span>
+        </div>
+        <div class="navbar-right">
+            <a href="{{ url_for('sdashboard') }}" class="active" id="profile-link">Profile</a>
+            <a href="{{ url_for('scampaigns') }}" class="active" id="campaigns-link">Campaigns</a>
+            <a href="{{ url_for('find_sponsor') }}" id="find-link">Find</a>
+            <a href="#">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <div id="requests-section" class="requests-section">
+        <h2>Ad Requests</h2>
+        <ul id="requests-list">
+            {% for request in requests %}
+                <li class="request-item">
+                    <h3>{{ request.name }}</h3>
+                    <p><strong>Messages:</strong> {{ request.messages }}</p>
+                    <p><strong>Requirements:</strong> 
+                        {% if request.requirements %} {{ request.requirements }}
+                        {% else %} N/A
+                        {% endif %}
+                    </p>
+                    <p><strong>Influencer Name:</strong> {{ request.inf_username }}</p>
+                    <p><strong>Payment Amount:</strong> Rs {{ request.payment_amount }}</p>
+                    <p><strong>Status:</strong> {{ request.status }}</p>
+
+                    <button type="button" class="update-request-button" data-request-id="{{ request.id }}">Update</button>
+                    <button type="button" class="delete-request-button" data-request-id="{{ request.id }}">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Modal for update request-->
+    <div id="update-request-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Request</h2>
+            <form id="update-request-form">
+                <input type="hidden" name="request_id" id="update-request-id">
+
+                <label for="request-name">Request Name:</label>
+                <input type="text" id="request-name" name="name" required>
+
+                <label for="request-messages">Messages:</label>
+                <textarea id="request-messages" name="messages" rows="4" required></textarea>
+
+                <label for="request-requirements">Requirements:</label>
+                <textarea id="request-requirements" name="requirements" rows="4"></textarea>
+
+                <label for="request-payment-amount">Payment Amount:</label>
+                <input type="number" id="request-payment-amount" name="payment_amount" required>
+
+                <button type="submit">Update Request</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const updateRequestButtons = document.querySelectorAll('.update-request-button');
+            console.log(updateRequestButtons)
+            const updateRequestModal = document.getElementById('update-request-modal');
+            const closeUpdateRequestModal = document.querySelector('#update-request-modal .close');
+            const updateRequestId = document.getElementById('update-request-id');
+
+            updateRequestButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    updateRequestModal.style.display = 'block';
+                    updateRequestId.value = this.dataset.requestId;
+                });
+            });
+
+            closeUpdateRequestModal.addEventListener('click', () => {
+                updateRequestModal.style.display = 'none';
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === updateRequestModal) updateRequestModal.style.display = 'none';
+            });
+
+            const formHandler = (formId, endpoint, req) => {
+                document.getElementById(formId).addEventListener('submit', e => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const data = Object.fromEntries(formData.entries());
+
+                    fetch(endpoint, {
+                        method: req,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            alert(data.message);
+                            location.reload();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Error occurred. Please try again later.');
+                        });
+                });
+            };
+
+            formHandler('update-request-form', '/api/ad_request', 'PUT');
+
+            document.querySelectorAll('.delete-request-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const requestId = this.getAttribute('data-request-id');
+                    const confirmation = confirm('Are you sure you want to delete this request?');
+
+                    if (confirmation) {
+                        fetch('/api/ad_request', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ id: requestId })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Success:', data);
+                                alert(data.message);
+                                this.parentElement.remove();
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Error occurred while deleting the request. Please try again later.');
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+</body>
+</html>
