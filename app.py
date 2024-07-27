@@ -231,6 +231,19 @@ def view_requests(id, source):
                 request.status = 'Accepted by Influencer' if request.initiator == 'sponsor' else 'Accepted by You'
         return rt('view_requests.html', requests=requests, campaign_id=id, userID = current_userID)
 
+    elif source == 'requests':
+        campaigns = Campaign.query.filter(Campaign.sponsor_id == id).all()
+        requests =[]
+        for campaign in campaigns:
+            request = AdRequest.query.filter(AdRequest.campaign_id == campaign.id).all()
+            for req in request:
+                inf = User.query.filter(User.id == req.influencer_id).first()
+                req.inf_username = inf.username
+                if req.status == 'accepted':
+                    req.status = 'Accepted by Influencer' if req.initiator == 'sponsor' else 'Accepted by You'
+                requests.append(req)
+        print(requests)
+        return rt('view_requests.html', requests=requests, campaign_id=id, userID = current_userID)
 
 @app.route('/find_sponsor', methods = ['GET', 'POST'])
 def find_sponsor():
