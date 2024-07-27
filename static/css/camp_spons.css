@@ -106,6 +106,48 @@ header {
     text-align: center;
 }
 
+.campaign-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    align-items: center;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.campaign-overview span {
+    flex-grow: 1;
+    font-size: 18px;
+}
+
+
+.campaign-title {
+    font-weight: bold;
+    margin-right: 20px;
+}
+
+.campaign-progress, .campaign-funds {
+    margin-right: 20px;
+}
+
+.view-more-button {
+    margin-left: auto;
+    background-color: #ffc107;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.view-more-button:hover {
+    background-color: #e0a800;
+}
+
 
 /* Modal styles */
 .modal, #create-campaign-modal, #update-campaign-modal {

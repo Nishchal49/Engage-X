@@ -127,6 +127,29 @@ class campaign(Resource):
         db.session.commit()
 
         return {'message': 'Campaign deleted successfully!'}
+    
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('id', type=int, required=True, help='Campaign ID is required')
+        args = parser.parse_args()
+
+        campaign = Campaign.queryfilter(Campaign.id == args['id'])
+        if not campaign:
+            return {'message': 'Campaign not found'}, 404
+        
+        return {
+            'id': campaign.id,
+            'title': campaign.title,
+            'description': campaign.description,
+            'goals': campaign.goals,
+            'funds': campaign.funds,
+            'start_date': campaign.start_date,
+            'days': campaign.days,
+            'visibility': campaign.visibility,
+            'sponsor_id': campaign.sponsor_id,
+            'message': 'Campaign details retrieved successfully!'
+        }
+
  
 
 class ad_request(Resource):
@@ -143,7 +166,32 @@ class ad_request(Resource):
         parser.add_argument('inf_name', type=str, required=False)
         args = parser.parse_args()
 
-        new_req = AdRequest(name = args['name'], campaign_id=args['campaign_id'], initiator = args['initiator'], messages=args['messages'], payment_amount=args['payment_amount'], status='Pending')
+        if args['initiator'] == 'sponsor':
+            accptReq = AdRequest.query.filter(
+                AdRequest.campaign_id == args['campaign_id'],
+                AdRequest.status == 'accepted'
+            ).all()
+            totalPayments = sum(request.payment_amount for request in accptReq)
+            print(totalPayments)
+            campaign = Campaign.query.filter(Campaign.id == args['campaign_id']).first()
+            if not campaign:
+                return {'message': 'Campaign not found'}, 404
+
+            remFunds = campaign.funds - totalPayments
+            print(remFunds)
+
+            if remFunds < args['payment_amount']:
+                return {'message': 'Insufficient campaign funds to offer this payment amount'}, 400
+
+
+
+        new_req = AdRequest(name = args['name'], 
+                            campaign_id=args['campaign_id'], 
+                            initiator = args['initiator'], 
+                            messages=args['messages'], 
+                            payment_amount=args['payment_amount'], 
+                            status='Pending')
+        
         if args['userId']:
             new_req.influencer_id=args['userId']
 

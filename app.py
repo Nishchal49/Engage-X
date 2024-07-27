@@ -203,6 +203,20 @@ def scampaigns():
 
     return rt('campaign_sponsor.html', campaigns = dat, today_date = today_date, userID = current_userID)
 
+@app.route('/view_details/<source>/<int:id>', methods=['POST'])
+def view_details(id, source):
+    if source =='campaign':
+        campaign = Campaign.query.filter(Campaign.id == id).first()
+        campaign.end_date = campaign.get_end_date()
+        campaign.progress = campaign.get_progress()
+        today_date = datetime.today().strftime("%Y-%m-%d")
+        print(today_date)
+        print(current_userID)
+        if campaign:
+            return rt('view_details.html', campaign=campaign, today_date = today_date, userID = current_userID)
+        else:
+            return 'Campaign not found', 404
+
 
 @app.route('/find_sponsor', methods = ['GET', 'POST'])
 def find_sponsor():

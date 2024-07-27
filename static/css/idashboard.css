@@ -114,21 +114,19 @@ main {
     border-radius: 8px;
     cursor: pointer;
     font-size: 16px;
+    color: white;
 }
 
 .view-btn {
     background-color: #ffc107;
-    color: white;
 }
 
 .accept-btn {
     background-color: #28a745;
-    color: white;
 }
 
 .reject-btn {
     background-color: #dc3545;
-    color: white;
 }
 
 .view-btn:hover {
