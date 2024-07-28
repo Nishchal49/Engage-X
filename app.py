@@ -1,7 +1,7 @@
-from flask import Flask, render_template as rt, request, redirect, url_for
+from flask import Flask, render_template as rt, request, redirect, url_for, jsonify
 from models import *
 from apis import *
-import os
+import os, random
 from flask_restful import Api
 
 current_dir = os.path.abspath(os.path.dirname(__file__))
@@ -478,6 +478,69 @@ def search_admin():
         return rt('search_admin.html', results=data, userID = current_userID, today_date=today_date, source = source)
 
     return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/stats', methods=['GET', 'POST'])
+def stats():
+    return rt('stats.html')
+
+
+@app.route('/stats_data', methods=['GET'])
+def stats_data():
+
+    #Sponsors vs N(campaigns)
+    spons = User.query.filter(User.role == 'sponsor').all()
+    spons_camp = dict()
+    spons_name = list()
+    camp_count = list()
+    bar_color1 = list()
+    for s in spons:
+        spons_name.append(s.username)
+        camp = Campaign.query.filter(Campaign.sponsor_id == s.id).all()
+        camp_count.append(len(camp))
+        r, g, b = random.randint(0,255), random.randint(0,255), random.randint(0,255)
+        bar_color1.append(f"rgb({r}, {g}, {b})")
+
+    spons_camp['name'] = spons_name
+    spons_camp['count'] = camp_count
+    spons_camp['color'] = bar_color1
+
+
+    # Campaigns vs N(requests)
+    campaigns = Campaign.query.all()
+    camp_requests = {
+        'name': [],
+        'count': [],
+        'color': []
+    }
+    for c in campaigns:
+        camp_requests['name'].append(c.title)
+        requests = AdRequest.query.filter(AdRequest.campaign_id == c.id).all()
+        camp_requests['count'].append(len(requests))
+        r, g, b = random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
+        camp_requests['color'].append(f"rgb({r}, {g}, {b})")
+
+
+    # Influencers vs N(requests)
+    infl = User.query.filter(User.role == 'influencer').all()
+    infl_requests = {
+        'name': [],
+        'count': [],
+        'color': []
+    }
+    for i in infl:
+        infl_requests['name'].append(i.username)
+        requests = AdRequest.query.filter(AdRequest.influencer_id == i.id).all()
+        infl_requests['count'].append(len(requests))
+        r, g, b = random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
+        infl_requests['color'].append(f"rgb({r}, {g}, {b})")
+
+    return jsonify({
+        'spons_camp': spons_camp,
+        'camp_requests': camp_requests,
+        'infl_requests': infl_requests
+    })
+
 
 
 @app.route('/logout')

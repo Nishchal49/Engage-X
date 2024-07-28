@@ -281,3 +281,23 @@ header {
 .unflag-button:hover {
     background-color: #218838;
 }
+
+/* Stats section */
+
+.charts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.chart {
+    width: 100%;
+    max-width: 700px;
+    margin-bottom: 30px;
+}
+
+canvas {
+    width: 100% !important;
+    height: auto !important;
+}

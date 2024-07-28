@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/admin_dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>ENGAGE-X</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span>Admin</span>
+        </div>
+        <div class="navbar-right">
+            <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('stats') }}">Stats</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="charts-container">
+        <div class="chart">
+            <h2>Sponsors and Number of Campaigns</h2>
+            <canvas id="sponsorCampaignChart"></canvas>
+        </div>
+        <div class="chart">
+            <h2>Campaigns and Number of Requests</h2>
+            <canvas id="campaignRequestChart"></canvas>
+        </div>
+        <div class="chart">
+            <h2>Influencers and Number of Requests</h2>
+            <canvas id="influencerRequestChart"></canvas>
+        </div>
+    </div>
+
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('/stats_data');
+            const data = await response.json();
+            return data;
+        }
+
+        async function sponsorVsCampaignChart(data) {
+            const x = data.spons_camp.name;
+            const y = data.spons_camp.count;
+            const barColors = data.spons_camp.color;
+
+            new Chart("sponsorCampaignChart", {
+                type: "bar",
+                data: {
+                    labels: x,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: y
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "Sponsors and their campaigns"
+                    }
+                }
+            });
+        }
+
+        async function campaignVsRequestChart(data) {
+            const x = data.camp_requests.name;
+            const y = data.camp_requests.count;
+            const barColors = data.camp_requests.color;
+
+            new Chart("campaignRequestChart", {
+                type: "bar",
+                data: {
+                    labels: x,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: y
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "Campaigns and their requests"
+                    }
+                }
+            });
+        }
+
+        async function influencerVsRequestChart(data) {
+            const x = data.infl_requests.name;
+            const y = data.infl_requests.count;
+            const barColors = data.infl_requests.color;
+
+            new Chart("influencerRequestChart", {
+                type: "bar",
+                data: {
+                    labels: x,
+                    datasets: [{
+                        backgroundColor: barColors,
+                        data: y
+                    }]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: "Influencers and their requests"
+                    }
+                }
+            });
+        }
+
+        async function renderCharts() {
+            const data = await fetchData();
+            sponsorVsCampaignChart(data);
+            campaignVsRequestChart(data);
+            influencerVsRequestChart(data);
+        }
+
+        renderCharts();
+
+    </script>
+
+</body>
+</html>
