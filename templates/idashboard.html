@@ -37,23 +37,19 @@
                 </div>
             </div>
             <div class="welcome-section">
-                <h3>Active Campaigns:</h3>
-                {% if campaigns %}
-                    {% for campaign in campaigns %}
-                        <div class="campaign">
-                            <span>{{ campaign.title }} | Progress: {{ campaign.progress }}%</span>
-                            <button class="view-btn">View</button>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="campaign" id="no_results">  <span> N/A</span>   </div>
-                {% endif %}
-                <h3>New Requests:</h3>
+                <div class="header-container">
+                    <h3>New Requests:</h3>
+                    <form class="view-requests" 
+                              action="{{ url_for('view_requests', id=userID, source='influencer') }}" 
+                              method="POST">
+                            <input type="hidden" name="userID" value="{{ userID }}">
+                            <button type="submit" class="view-btn">View All</button>
+                    </form>
+                </div>
                 {% if requests %}
                     {% for request in requests %}
                     <div class="request">
                         <span>{{ request.campaign_title }} | {{ request.sponsor_name }}</span>
-                        <button class="view-btn">View</button>
                         <form action="{{ url_for('update_request_status', request_id=request.request_id, source = 'influencer') }}" method="POST">
                             <input type="hidden" name="action" value="accept">
                             <button class="accept-btn" type="submit">Accept</button>

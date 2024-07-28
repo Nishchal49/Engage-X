@@ -14,7 +14,9 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-left">
-            <span>Sponsor</span>
+            <span>
+                {{ 'Sponsor' if source == 'sponsor' else 'Influencer' if source == 'influencer' else '' }}
+            </span>
         </div>
         <div class="navbar-right">
             <a href="{{ url_for('sdashboard') }}" class="active" id="profile-link">Profile</a>
@@ -37,12 +39,20 @@
                         {% else %} N/A
                         {% endif %}
                     </p>
-                    <p><strong>Influencer Name:</strong> {{ request.inf_username }}</p>
+                    <p>
+                    {% if source == 'sponsor' %}
+                        <strong>Influencer Name:</strong> {{ request.inf_username }}
+                    {% elif source == 'influencer'%}
+                        <strong>Sponsor Name:</strong> {{ request.spons_username }}
+                    {% endif %}
+                    </p>
                     <p><strong>Payment Amount:</strong> Rs {{ request.payment_amount }}</p>
                     <p><strong>Status:</strong> {{ request.status }}</p>
+                    {% if source == 'sponsor' %}
+                        <button type="button" class="update-request-button" data-request-id="{{ request.id }}">Update</button>
+                        <button type="button" class="delete-request-button" data-request-id="{{ request.id }}">Delete</button>
+                    {% endif %}
 
-                    <button type="button" class="update-request-button" data-request-id="{{ request.id }}">Update</button>
-                    <button type="button" class="delete-request-button" data-request-id="{{ request.id }}">Delete</button>
                     </form>
                 </li>
             {% endfor %}

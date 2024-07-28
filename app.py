@@ -103,26 +103,10 @@ def idashboard():
             'request_id': request.id
         })
 
-    today = datetime.today()
-    ads= AdRequest.query.filter(
-        AdRequest.influencer_id == current_userID, 
-        AdRequest.status == 'accepted').all()
-    campaign_ids = [ad.campaign_id for ad in ads]
-    dat = Campaign.query.filter(Campaign.id.in_(campaign_ids)).all()
-    for campaign in dat:
-        campaign.end_date = campaign.get_end_date()
-        campaign.progress = campaign.get_progress()
-
-    active_campaigns = [campaign for campaign in dat if datetime.strptime(campaign.start_date, "%Y-%m-%d") 
-                        <= today <= datetime.strptime(campaign.end_date, "%Y-%m-%d")]
-
-    today_date = today.strftime("%Y-%m-%d")
     return rt('idashboard.html', 
               name =name, 
-              funds = funds, 
-              campaigns = active_campaigns, 
+              funds = funds,                
               requests = requests_data, 
-              today_date = today_date, 
               userID = current_userID)
 
 @app.route('/find_influencer', methods = ['GET', 'POST'])
@@ -229,7 +213,13 @@ def view_requests(id, source):
             request.inf_username = inf.username
             if request.status == 'accepted':
                 request.status = 'Accepted by Influencer' if request.initiator == 'sponsor' else 'Accepted by You'
-        return rt('view_requests.html', requests=requests, campaign_id=id, userID = current_userID)
+
+            elif request.status == 'rejected':
+                request.status = 'Rejected by Influencer' if request.initiator == 'sponsor' else 'Rejected by You'
+
+            elif request.status == 'Pending':
+                request.status = 'Pending! Sent by You' if request.initiator == 'sponsor' else 'Pending! Sent by Influencer'
+        return rt('view_requests.html', requests=requests, source = 'sponsor', userID = current_userID)
 
     elif source == 'requests':
         campaigns = Campaign.query.filter(Campaign.sponsor_id == id).all()
@@ -241,9 +231,29 @@ def view_requests(id, source):
                 req.inf_username = inf.username
                 if req.status == 'accepted':
                     req.status = 'Accepted by Influencer' if req.initiator == 'sponsor' else 'Accepted by You'
+                elif req.status == 'rejected':
+                    req.status = 'Rejected by Influencer' if req.initiator == 'sponsor' else 'Rejected by You'
+
+                elif req.status == 'Pending':
+                    req.status = 'Pending! Sent by You' if req.initiator == 'sponsor' else 'Pending! Sent by Influencer'
                 requests.append(req)
         print(requests)
-        return rt('view_requests.html', requests=requests, campaign_id=id, userID = current_userID)
+        return rt('view_requests.html', requests=requests, source='sponsor', userID = current_userID)
+    elif source =='influencer':
+        
+        requests= AdRequest.query.filter(AdRequest.influencer_id == id).all()
+        for req in requests:
+            spons = req.campaign.sponsor
+            req.spons_username = spons.username
+            if req.status == 'accepted':
+                req.status = 'Accepted by You' if req.initiator == 'sponsor' else 'Accepted by Sponsor'
+            elif req.status == 'rejected':
+                req.status = 'Rejected by You' if req.initiator == 'sponsor' else 'Rejected by Sponsor'
+
+            elif req.status == 'Pending':
+                req.status = 'Pending! Sent by Sponsor' if req.initiator == 'sponsor' else 'Pending! Sent by You'
+        print(requests)
+        return rt('view_requests.html', requests=requests, source = 'influencer', userID = current_userID)
 
 @app.route('/find_sponsor', methods = ['GET', 'POST'])
 def find_sponsor():

@@ -83,11 +83,17 @@ main {
     font-size: 28px;
 }
 
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .welcome-section h3 {
     font-size: 24px;
 }
 
-.campaign, .request {
+.request {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -98,7 +104,7 @@ main {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.campaign span, .request span {
+.request span {
     flex-grow: 1;
     font-size: 18px;
 }
