@@ -404,8 +404,8 @@ def show_users(type):
         users = User.query.filter(User.is_flagged == True).all()
     
     if request.method == 'POST':
-        user_id = request.form.get('user_id')
-        action = request.form.get('action')
+        user_id = request.form['user_id']
+        action = request.form['action']
         user = db.session.get(User, user_id)
         print(user_id)
         print(action)
