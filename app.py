@@ -115,7 +115,7 @@ def find_influencer():
         search_tag = request.form['tag']
         search_input = request.form['search-input'] 
         source = request.form['source']
-        print(current_userID)
+        #print(current_userID)
 
         if search_tag == 'title':
             data = Campaign.query.filter(Campaign.title.like('%' + search_input + '%'), Campaign.visibility == 'public').all()
@@ -195,8 +195,8 @@ def view_details(id, source):
         campaign.end_date = campaign.get_end_date()
         campaign.progress = campaign.get_progress()
         today_date = datetime.today().strftime("%Y-%m-%d")
-        print(today_date)
-        print(current_userID)
+        # print(today_date)
+        # print(current_userID)
         if campaign:
             return rt('view_details.html', campaign=campaign, today_date = today_date, userID = current_userID)
         else:
@@ -237,7 +237,7 @@ def view_requests(id, source):
                 elif req.status == 'Pending':
                     req.status = 'Pending! Sent by You' if req.initiator == 'sponsor' else 'Pending! Sent by Influencer'
                 requests.append(req)
-        print(requests)
+        #print(requests)
         return rt('view_requests.html', requests=requests, source='sponsor', userID = current_userID)
     elif source =='influencer':
         
@@ -252,7 +252,7 @@ def view_requests(id, source):
 
             elif req.status == 'Pending':
                 req.status = 'Pending! Sent by Sponsor' if req.initiator == 'sponsor' else 'Pending! Sent by You'
-        print(requests)
+        #print(requests)
         return rt('view_requests.html', requests=requests, source = 'influencer', userID = current_userID)
 
 @app.route('/find_sponsor', methods = ['GET', 'POST'])
@@ -260,7 +260,7 @@ def find_sponsor():
     if request.method == 'POST':
         search_tag = request.form['tag']
         search_input = request.form['search-input'] 
-        print(current_userID)
+        #print(current_userID)
 
         if search_tag == 'title':
             data = Campaign.query.filter(Campaign.title.like('%' + search_input + '%'), Campaign.visibility == 'public').all()
@@ -298,13 +298,13 @@ def update_request_status(request_id, source):
                 AdRequest.status == 'accepted'
             ).all()
             totalPayments = sum(request.payment_amount for request in accptReq)
-            print(totalPayments)
+            #print(totalPayments)
             campaign = Campaign.query.filter(Campaign.id == ad_request.campaign_id).first()
             if not campaign:
                 return {'message': 'Campaign not found'}, 404
 
             remFunds = campaign.funds - totalPayments
-            print(remFunds)
+            #print(remFunds)
             
             if remFunds >= ad_request.payment_amount:
                 ad_request.status = 'accepted'
@@ -406,19 +406,19 @@ def show_users(type):
     if request.method == 'POST':
         user_id = request.form['user_id']
         action = request.form['action']
-        user = db.session.get(User, user_id)
-        print(user_id)
-        print(action)
-        print(user)
-        print("Before", user.is_flagged)
+        user = User.query.filter(User.id == user_id).first()
+        # print(user_id)
+        # print(action)
+        # print(user)
+        # print("Before", user.is_flagged)
         if user:
             if action == 'flag':
                 user.flag()
             elif action == 'unflag':
                 user.unflag()
-            print(user.is_flagged)
+            #print(user.is_flagged)
             db.session.commit()
-        print("AFTER", user.is_flagged) 
+        #print("AFTER", user.is_flagged) 
         return redirect(url_for('show_users', type=type))
     
     return rt('users.html', users=users, type=type)
@@ -430,7 +430,7 @@ def search_admin():
         source = request.form['source']
         search_tag = request.form['tag']
         search_input = request.form['search-input'] 
-        print(current_userID)
+        #print(current_userID)
 
         if source == 'campaigns':
             if search_tag == 'title':
@@ -468,7 +468,7 @@ def search_admin():
                     data.append(profile)
             
             elif search_tag == 'funds':
-                users = db.session.query(User).join(Profile).filter(Profile.funds >= search_input).all()
+                users = User.query.join(Profile).filter(Profile.funds >= search_input).all()
                 data = []
                 for user in users:
                     profile = Profile.query.filter(Profile.user_id == user.id).first()

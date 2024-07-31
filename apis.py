@@ -21,7 +21,7 @@ class campaign(Resource):
             return {'message': 'Sponsor does not exist'}, 400
         
         total_funds = spons.funds
-        print(total_funds)
+        #print(total_funds)
 
         if total_funds < args['funds']:
             return {'message': 'Insufficient funds'}, 400
@@ -43,14 +43,14 @@ class campaign(Resource):
             sponsor_id=args['sponsor_id']
         )
 
-        print(new_campaign.title)
-        print(new_campaign.description)
-        print(new_campaign.goals)
-        print(new_campaign.funds)
-        print(new_campaign.start_date)
-        print(new_campaign.days)
-        print(new_campaign.visibility)
-        print(new_campaign.sponsor_id)
+        # print(new_campaign.title)
+        # print(new_campaign.description)
+        # print(new_campaign.goals)
+        # print(new_campaign.funds)
+        # print(new_campaign.start_date)
+        # print(new_campaign.days)
+        # print(new_campaign.visibility)
+        # print(new_campaign.sponsor_id)
 
 
         db.session.add(new_campaign)
@@ -81,7 +81,7 @@ class campaign(Resource):
             return {'message': 'Sponsor does not exist'}, 400
         
         total_funds = spons.funds + existing_campaign.funds
-        print(total_funds)
+        #print(total_funds)
 
         if total_funds < args['funds']:
             return {'message': 'Insufficient funds'}, 400
@@ -122,7 +122,7 @@ class campaign(Resource):
                 return {'message': 'Sponsor does not exist'}, 400
             spons.funds += del_campaign.funds
 
-        print(del_campaign)
+        # print(del_campaign)
         db.session.delete(del_campaign)
         db.session.commit()
 
@@ -172,13 +172,13 @@ class ad_request(Resource):
                 AdRequest.status == 'accepted'
             ).all()
             totalPayments = sum(request.payment_amount for request in accptReq)
-            print(totalPayments)
+            #print(totalPayments)
             campaign = Campaign.query.filter(Campaign.id == args['campaign_id']).first()
             if not campaign:
                 return {'message': 'Campaign not found'}, 404
 
             remFunds = campaign.funds - totalPayments
-            print(remFunds)
+            #print(remFunds)
 
             if remFunds < args['payment_amount']:
                 return {'message': 'Insufficient campaign funds to offer this payment amount'}, 400
@@ -200,18 +200,18 @@ class ad_request(Resource):
             if inf:
                 new_req.requirements = args['requirements']
                 new_req.influencer_id= inf.id
-                print(new_req.requirements)
-                print(new_req.influencer_id)
+                # print(new_req.requirements)
+                # print(new_req.influencer_id)
             else:
                 return {'message' : 'User not found!'}, 404
 
-        print(new_req.name)
-        print(new_req.campaign_id)  
-        print(new_req.influencer_id)
-        print(new_req.initiator)
-        print(new_req.messages)
-        print(new_req.payment_amount)
-        print(new_req.status)
+        # print(new_req.name)
+        # print(new_req.campaign_id)  
+        # print(new_req.influencer_id)
+        # print(new_req.initiator)
+        # print(new_req.messages)
+        # print(new_req.payment_amount)
+        # print(new_req.status)
         
 
         db.session.add(new_req)
@@ -245,10 +245,10 @@ class ad_request(Resource):
             existing_request.initiator = 'sponsor'
 
         try:
-            print(existing_request.name)
-            print(existing_request.messages)
-            print(existing_request.requirements)
-            print(existing_request.payment_amount)
+            # print(existing_request.name)
+            # print(existing_request.messages)
+            # print(existing_request.requirements)
+            # print(existing_request.payment_amount)
             db.session.commit()
             return {'message': 'Request updated successfully!'}
         except IntegrityError as e:
